@@ -1,23 +1,12 @@
-import * as express from 'express';
-import * as mongoose from 'mongoose';
-import { getEnvVariables } from './environments/environment';
+import { Server } from "./server";
 
-let app: express.Application = express();
+let server = new Server().app;
+let port = 3000;
 
-app.listen(3000, ()=> {
+server.listen(port, ()=> {
     console.log("Server is running");
 });
 
-mongoose.connect(getEnvVariables().db_uri).then(()=> {
-    console.log('Connected mongo db');
-});
 
 
-app.use((req, res, next) => {
-    console.log('middleare')
-    next();
-});
 
-app.get('/api/user/login', (req, res)=> {
-    res.status(200).send("hello");
-});
