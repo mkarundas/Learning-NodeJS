@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
 import { UserValidators } from '../Validators/UserValidator';
+import { GlobalMiddlWare } from '../middlewares/GlobalMiddleware';
 
 class UserRouter {
 
@@ -11,6 +12,7 @@ class UserRouter {
 
         this.getRoutes();
         this.postRoutes();
+        this.patchRoutes();
     }
 
     getRoutes() {
@@ -18,7 +20,11 @@ class UserRouter {
     }
 
     postRoutes() {
-        this.router.post('/signup', UserValidators.signup(), UserController.signup);
+        this.router.post('/signup', UserValidators.signup(), GlobalMiddlWare.checkError, UserController.signup);
+    }
+
+    patchRoutes() {
+        this.router.patch('/verify', UserValidators.verifyUserEmail(), GlobalMiddlWare.checkError, UserController.verify);
     }
 }
 
