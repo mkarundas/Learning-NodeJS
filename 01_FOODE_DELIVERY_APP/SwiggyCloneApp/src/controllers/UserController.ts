@@ -1,4 +1,5 @@
 import User from "../models/User";
+import { NodeMailer } from "../Utils/NodeMailer";
 import { Utils } from '../Utils/Utils';
 
 export class UserController {
@@ -11,6 +12,7 @@ export class UserController {
         const type = req.body.type;
         const status = req.body.status;
         const phone = req.body.phone;
+        const verification_token = Utils.generateverificationToken(5);
         const data = {
             name: name,
             email: email,
@@ -18,12 +20,18 @@ export class UserController {
             type: type,
             status: status,
             phone: phone,
-            verification_token: Utils.generateverificationToken(),
+            verification_token: verification_token,
             verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
         }
-
+        
         try {
             let user = await new User(data).save();
+            /*
+            await NodeMailer.sendMail({
+                to: [email],
+                subject: 'test',
+                html: `<h1> Your Otp is ${verification_token}</h1>`
+            });*/
             res.send(user);
         } catch(e) {
             next(e);
