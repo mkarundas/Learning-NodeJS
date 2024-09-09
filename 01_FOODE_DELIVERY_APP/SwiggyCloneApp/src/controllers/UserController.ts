@@ -1,5 +1,5 @@
 import User from "../models/User";
-import { NodeMailer } from "../Utils/NodeMailer";
+import { Jwt } from "../Utils/Jwt";
 import { Utils } from '../Utils/Utils';
 
 export class UserController {
@@ -32,7 +32,7 @@ export class UserController {
                 email: user.email
             }
 
-            const token = Utils.jwtSignIn(payload);
+            const token = Jwt.jwtSignIn(payload);
 
             res.json({
                 token: token,
@@ -52,7 +52,7 @@ export class UserController {
     }
 
     static async verify(req, res, next) {
-        const email = req.body.email;
+        const email = req.user.email;
         const verification_token = req.body.verification_token;
         try {
             const user = await User.findOneAndUpdate( {
@@ -81,7 +81,7 @@ export class UserController {
 
     static async resendVerificationEmail(req, res, next) {
         const verification_token = Utils.generateverificationToken();
-        const email = req.query.email;
+        const email = req.user.email;
         try {
             const user = await User.findOneAndUpdate({
                 email: email,
@@ -118,7 +118,7 @@ export class UserController {
                 email: user.email
             }
 
-            const token = Utils.jwtSignIn(payload);  
+            const token = Jwt.jwtSignIn(payload);  
 
             res.json({
                 token: token,

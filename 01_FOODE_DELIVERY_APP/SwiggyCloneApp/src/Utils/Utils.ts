@@ -1,6 +1,4 @@
 import * as Bcrypt from 'bcrypt';
-import * as JWT from 'jsonwebtoken';
-import { getEnvVariables } from '../environments/environment';
 
 
 export class Utils {
@@ -40,13 +38,5 @@ export class Utils {
                 }
             })
         });
-    }
-
-     static jwtSignIn(payload, expires_in: string = '180d') {
-        return  JWT.sign(
-                payload,
-                getEnvVariables().jwt_secret_ket,
-                { expiresIn: expires_in}
-            );
     }
 }
