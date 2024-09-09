@@ -28,7 +28,7 @@ export class UserController {
 
             let user = await new User(data).save();
             const payload = {
-                user_id: user._id,
+                aud: user._id,
                 email: user.email
             }
 
@@ -51,7 +51,7 @@ export class UserController {
         }
     }
 
-    static async verify(req, res, next) {
+    static async verifyUserEmailToken(req, res, next) {
         const email = req.user.email;
         const verification_token = req.body.verification_token;
 
@@ -120,7 +120,7 @@ export class UserController {
             }
             await Utils.comparePassword(data);
             const payload = {
-                user_id: user._id,
+                aud: user._id,
                 email: user.email
             }
 
@@ -162,12 +162,8 @@ export class UserController {
         }
     }
 
-    static async verifyResetPasswordToken(req, res, next) {
-        try {
-            res.json({success: true});  
-        } catch (e) {
-            next(e);
-        }
+    static verifyResetPasswordToken(req, res, next) {
+        res.json({success: true});
     }
 
     static async resetPassword(req, res, next) {
@@ -178,9 +174,7 @@ export class UserController {
         try {
             const encryptedPassword = await Utils.encryptPassword(new_password);
 
-            const updatedUser = await User.findOneAndUpdate({
-                _id: user._id,
-            },
+            const updatedUser = await User.findByIdAndUpdate(user._id,
         {
             password: encryptedPassword,
         }, {

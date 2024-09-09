@@ -7,7 +7,7 @@ export class Jwt {
         return  jwt.sign(
                 payload,
                 getEnvVariables().jwt_secret_ket,
-                { expiresIn: expires_in}
+                { expiresIn: expires_in, issuer: 'mkarundas.com'}
             );
     }
 

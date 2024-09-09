@@ -27,7 +27,7 @@ class UserRouter {
     }
 
     patchRoutes() {
-        this.router.patch('/verify', UserValidators.verifyUser(), GlobalMiddlWare.checkError, GlobalMiddlWare.auth, UserController.verify);
+        this.router.patch('/verify/email-token', GlobalMiddlWare.auth, UserValidators.verifyUserEmailToken(), GlobalMiddlWare.checkError, UserController.verifyUserEmailToken);
         this.router.patch('/reset/password', UserValidators.resetPassword(), GlobalMiddlWare.checkError, UserController.resetPassword);
     }
 }

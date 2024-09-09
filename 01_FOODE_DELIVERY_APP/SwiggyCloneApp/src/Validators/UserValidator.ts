@@ -29,7 +29,7 @@ export class UserValidators {
         ];
     }
 
-    static verifyUser() {
+    static verifyUserEmailToken() {
         return [
             body('verification_token', 'Email verification token is required.').isNumeric()
         ];
