@@ -15,7 +15,10 @@ export class UserValidators {
                     } else {
                         return true;
                     }
-                }).catch (e => new Error(e));
+                })
+                .catch(e => {
+                    throw new Error(e);
+                });;
             }),
             body('password', 'Password is required.')
             .isAlphanumeric()
@@ -44,10 +47,87 @@ export class UserValidators {
                     } else {
                         throw new Error('User does not exists.');
                     }
-                }).catch (e => new Error(e));
+                }).catch(e => {
+                    throw new Error(e);
+                });
             }),
             query('password', 'Password is required.')
             .isAlphanumeric()
+        ];
+    }
+
+    static checkResetPasswordEmail() {
+        return [
+            query('email', 'Email is required.').isEmail().custom((email, {req})=> {
+                return User.findOne({
+                    email: email
+                }).then(user=> {
+                    if(user) {
+                        return true
+                    } else {
+                        throw new Error('User does not exists.');
+                    }
+                }).catch(e => {
+                    throw new Error(e);
+                });
+            }),
+        ];
+    }
+
+    static testThis() {
+        query('email', 'Email is required.').isEmail()
+    }
+
+    static verifyResetPasswordToken() {
+        return [
+            query('email', 'Email is required.').isEmail(),
+            query('reset_password_token', 'Reset password token is required.').isNumeric()
+            .custom((reset_password_token, {req})=> {
+                return User.findOne({
+                    email: req.query.email,
+                    reset_password_token: reset_password_token,
+                    reset_password_token_time: { $gt: Date.now()}
+                }).then(user=> {
+                    if(user) {
+                        return true
+                    } else {
+                        throw new Error('Reset password token does not match.');
+                    }
+                }).catch(e => {
+                    throw new Error(e);
+                });
+            }),
+        ];
+    }
+
+    static resetPassword() {
+        return [
+            body('email', 'Email is required.').isEmail()
+            .custom((email, {req})=> {
+                return User.findOne({
+                    email: email
+                }).then(user=> {
+                    if(user) {
+                        req.user = user;
+                        return true
+                    } else {
+                        throw new Error('No user is registered with this email');
+                    }
+                }).catch(e => {
+                    throw new Error(e);
+                });
+            }),
+            body('new_password', 'New password is required.').isAlphanumeric(),
+            body('reset_password_token', 'Reset password token is required.').isNumeric()
+            .custom((reset_password_token, {req})=> {
+                if(req.user.reset_password_token === reset_password_token) {
+                    return true;
+                } else {
+                    req.errorStatus = 422;
+                    throw new Error('Reset password token is invalid.');
+                }
+            })
+           ,
         ];
     }
 }

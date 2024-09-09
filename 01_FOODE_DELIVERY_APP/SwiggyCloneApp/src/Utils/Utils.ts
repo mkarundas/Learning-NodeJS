@@ -3,7 +3,7 @@ import * as Bcrypt from 'bcrypt';
 
 export class Utils {
 
-    public MAX_TOKEN_TIME = (5 * 60 * 100);
+    public MAX_TOKEN_TIME = (5 * 60 * 1000);
 
     static generateverificationToken(digit: number = 6) {
         const digits = '0123456789';
@@ -11,7 +11,7 @@ export class Utils {
         for(let i=0; i < digit; i++) {
             otp += Math.floor(Math.random() * 10);
         }
-        return parseInt(otp);
+        return otp;
     }
 
     static encryptPassword(password) {

@@ -54,6 +54,10 @@ export class UserController {
     static async verify(req, res, next) {
         const email = req.user.email;
         const verification_token = req.body.verification_token;
+
+        console.log("email ", email)
+        console.log("verification_token ", verification_token)
+
         try {
             const user = await User.findOneAndUpdate( {
                 email: email,
@@ -68,6 +72,7 @@ export class UserController {
             }
         );
 
+        console.log("user ", user)
             if(user) {
                 res.send(user);
             } else {
@@ -87,13 +92,14 @@ export class UserController {
                 email: email,
             },
         {
+            updated_at: new Date(),
             verification_token: verification_token,
             verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
         });
 
         if(user) {
-            // send email from 3rd party - send grid
             res.json({success: true});
+            // send email from 3rd party - send grid
         } else {
             throw new Error('User does not exist.');
         }
@@ -124,6 +130,68 @@ export class UserController {
                 token: token,
                 user: user
             });
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async sendResetPasswordOtp(req, res, next) {
+        const reset_password_token = Utils.generateverificationToken();
+        const email = req.query.email;
+        try {
+            const user = await User.findOneAndUpdate({
+                email: email,
+            },
+        {
+            updated_at: new Date(),
+            reset_password_token: reset_password_token,
+            reset_password_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+        });
+
+        if(user) {
+            res.json({success: true});  
+            // send email from 3rd party - send grid
+            
+        } else {
+            throw new Error('User does not exist.');
+        }
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async verifyResetPasswordToken(req, res, next) {
+        try {
+            res.json({success: true});  
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async resetPassword(req, res, next) {
+
+        const user = req.user;
+        const new_password = req.body.new_password;
+
+        try {
+            const encryptedPassword = await Utils.encryptPassword(new_password);
+
+            const updatedUser = await User.findOneAndUpdate({
+                _id: user._id,
+            },
+        {
+            password: encryptedPassword,
+        }, {
+            new: true
+        });
+
+        if(updatedUser) {
+            res.send(updatedUser);  
+        } else {
+            throw new Error('User does not exist.');
+        }
 
         } catch (e) {
             next(e);
