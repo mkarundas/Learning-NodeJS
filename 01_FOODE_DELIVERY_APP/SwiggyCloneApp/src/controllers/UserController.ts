@@ -2,30 +2,45 @@ import { query } from "express-validator";
 import User from "../models/User";
 import { NodeMailer } from "../Utils/NodeMailer";
 import { Utils } from '../Utils/Utils';
+import * as Bcrypt from 'bcrypt';
 
 export class UserController {
 
+    private static encryptPassword(req, res, next) {
+        return new Promise((resolve, reject) => {
+            Bcrypt.hash(req.body.password, 10, (err, hash)=> {
+                if(err) {
+                    console.log("Error is ", err);
+                    reject(err);
+                } else {
+                    console.log("Hash is ", err);
+                    resolve(hash);
+                }
+            })
+        });
+    }
 
     static async signup(req, res, next) {
         const name = req.body.name;
         const email = req.body.email;
-        const password = req.body.password;
         const type = req.body.type;
         const status = req.body.status;
         const phone = req.body.phone;
         const verification_token = Utils.generateverificationToken();
-        const data = {
-            name: name,
-            email: email,
-            password: password,
-            type: type,
-            status: status,
-            phone: phone,
-            verification_token: verification_token,
-            verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
-        }
         
         try {
+            const hash = await UserController.encryptPassword(req, res, next);
+            const data = {
+                name: name,
+                email: email,
+                password: hash,
+                type: type,
+                status: status,
+                phone: phone,
+                verification_token: verification_token,
+                verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+            }
+
             let user = await new User(data).save();
             /*
             await NodeMailer.sendMail({
