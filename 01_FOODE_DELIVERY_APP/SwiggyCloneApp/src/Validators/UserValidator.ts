@@ -1,4 +1,4 @@
-import {body} from 'express-validator';
+import {body, query} from 'express-validator';
 import User from '../models/User';
 
 export class UserValidators {
@@ -6,7 +6,7 @@ export class UserValidators {
         return [
             body('name', 'Name is required.').isString(),
             body('phone', 'Phone is required.').isString(),
-            body('email', 'Email is required.').isEmail().custom((email, {req})=> {
+            body('email', 'Email is required.').isEmail().custom((email)=> {
                 return User.findOne({
                     email: email
                 }).then(user=> {
@@ -31,5 +31,11 @@ export class UserValidators {
             body('verification_token', 'Email verification token is required.').isNumeric(),
             body('email', 'Email is required.').isEmail(),
         ];
+    }
+
+    static verifyUserForverifyEmail() {
+        return [
+            query('email', 'Email is required.').isEmail()
+        ]
     }
 }

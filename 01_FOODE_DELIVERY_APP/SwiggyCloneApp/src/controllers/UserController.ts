@@ -1,3 +1,4 @@
+import { query } from "express-validator";
 import User from "../models/User";
 import { NodeMailer } from "../Utils/NodeMailer";
 import { Utils } from '../Utils/Utils';
@@ -12,7 +13,7 @@ export class UserController {
         const type = req.body.type;
         const status = req.body.status;
         const phone = req.body.phone;
-        const verification_token = Utils.generateverificationToken(5);
+        const verification_token = Utils.generateverificationToken();
         const data = {
             name: name,
             email: email,
@@ -28,7 +29,7 @@ export class UserController {
             let user = await new User(data).save();
             /*
             await NodeMailer.sendMail({
-                to: [email],
+                to: [user.email],
                 subject: 'test',
                 html: `<h1> Your Otp is ${verification_token}</h1>`
             });*/
@@ -64,5 +65,29 @@ export class UserController {
             next(e);
         }
 
+    }
+
+    static async resendVerificationEmail(req, res, next) {
+        const verification_token = Utils.generateverificationToken();
+        const email = req.query.email;
+        try {
+            const user = await User.findOneAndUpdate({
+                email: email,
+            },
+        {
+            verification_token: verification_token,
+            verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+        });
+
+        if(user) {
+            // send email from 3rd party - send grid
+            res.json({success: true});
+        } else {
+            throw new Error('User does not exist.');
+        }
+
+        } catch (e) {
+            next(e);
+        }
     }
 }
