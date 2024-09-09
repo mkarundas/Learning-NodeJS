@@ -6,5 +6,6 @@ export const DevEnvironment: Environment = {
     gmail_auth: {
         user: '',
         pass: ''
-    }
+    },
+    jwt_secret_ket: 'secret_key'
 }

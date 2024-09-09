@@ -6,5 +6,6 @@ export const ProdEnvironment: Environment = {
     gmail_auth: {
         user: '',
         pass: ''
-    }
+    },
+    jwt_secret_ket: 'secret_key_production'
 }

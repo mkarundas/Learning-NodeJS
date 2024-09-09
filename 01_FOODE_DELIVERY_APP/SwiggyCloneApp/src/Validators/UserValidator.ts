@@ -38,4 +38,23 @@ export class UserValidators {
             query('email', 'Email is required.').isEmail()
         ]
     }
+
+    static login() {
+        return [
+            query('email', 'Email is required.').isEmail().custom((email, {req})=> {
+                return User.findOne({
+                    email: email
+                }).then(user=> {
+                    if(user) {
+                        req.user = user;
+                        return true
+                    } else {
+                        throw new Error('User does not exists.');
+                    }
+                }).catch (e => new Error(e));
+            }),
+            query('password', 'Password is required.')
+            .isAlphanumeric()
+        ];
+    }
 }

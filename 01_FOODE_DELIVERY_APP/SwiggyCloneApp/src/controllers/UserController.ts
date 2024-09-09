@@ -1,24 +1,8 @@
-import { query } from "express-validator";
 import User from "../models/User";
 import { NodeMailer } from "../Utils/NodeMailer";
 import { Utils } from '../Utils/Utils';
-import * as Bcrypt from 'bcrypt';
 
 export class UserController {
-
-    private static encryptPassword(req, res, next) {
-        return new Promise((resolve, reject) => {
-            Bcrypt.hash(req.body.password, 10, (err, hash)=> {
-                if(err) {
-                    console.log("Error is ", err);
-                    reject(err);
-                } else {
-                    console.log("Hash is ", err);
-                    resolve(hash);
-                }
-            })
-        });
-    }
 
     static async signup(req, res, next) {
         const name = req.body.name;
@@ -27,9 +11,10 @@ export class UserController {
         const status = req.body.status;
         const phone = req.body.phone;
         const verification_token = Utils.generateverificationToken();
+        const password = req.body.password;
         
         try {
-            const hash = await UserController.encryptPassword(req, res, next);
+            const hash = await Utils.encryptPassword(password);
             const data = {
                 name: name,
                 email: email,
@@ -42,6 +27,18 @@ export class UserController {
             }
 
             let user = await new User(data).save();
+            const payload = {
+                user_id: user._id,
+                email: user.email
+            }
+
+            const token = Utils.jwtSignIn(payload);
+
+            res.json({
+                token: token,
+                user: user
+            });
+
             /*
             await NodeMailer.sendMail({
                 to: [user.email],
@@ -100,6 +97,33 @@ export class UserController {
         } else {
             throw new Error('User does not exist.');
         }
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async login(req, res, next) {
+        const user = req.user;
+        const password = req.query.password;
+        
+        try {
+            const data = {
+                password,
+                encrypt_password: user.password
+            }
+            await Utils.comparePassword(data);
+            const payload = {
+                user_id: user._id,
+                email: user.email
+            }
+
+            const token = Utils.jwtSignIn(payload);  
+
+            res.json({
+                token: token,
+                user: user
+            });
 
         } catch (e) {
             next(e);

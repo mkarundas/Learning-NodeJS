@@ -8,6 +8,7 @@ export interface Environment {
         user: string,
         pass: string
     }
+    jwt_secret_ket: string
 }
 
 export function getEnvVariables() {
