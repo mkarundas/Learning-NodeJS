@@ -20,6 +20,7 @@ class UserRouter {
         this.router.get('/login', UserValidators.login(), GlobalMiddlWare.checkError, UserController.login);
         this.router.get('/send/reset/password/token', UserValidators.checkResetPasswordEmail(), GlobalMiddlWare.checkError, UserController.sendResetPasswordOtp);
         this.router.get('/verify/reset/password/token', UserValidators.verifyResetPasswordToken(), GlobalMiddlWare.checkError, UserController.verifyResetPasswordToken);
+        this.router.get('/profile',GlobalMiddlWare.auth, UserController.profile);
     }
 
     postRoutes() {
@@ -29,6 +30,7 @@ class UserRouter {
     patchRoutes() {
         this.router.patch('/verify/email-token', GlobalMiddlWare.auth, UserValidators.verifyUserEmailToken(), GlobalMiddlWare.checkError, UserController.verifyUserEmailToken);
         this.router.patch('/reset/password', UserValidators.resetPassword(), GlobalMiddlWare.checkError, UserController.resetPassword);
+        this.router.patch('/update/phone', GlobalMiddlWare.auth, UserValidators.verifyUserPhone(), GlobalMiddlWare.checkError, UserController.updateUserPhone);
     }
 }
 

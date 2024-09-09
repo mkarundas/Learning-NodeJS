@@ -191,4 +191,31 @@ export class UserController {
             next(e);
         }
     }
+    static async profile(req, res, next){
+        const user = req.user;
+        try {
+            const profile = await User.findById(user.aud);
+            if(profile) {
+            res.send(profile); 
+        } else {
+            throw new Error('User does not exist.');
+        }
+    } catch (e) {
+        next(e);
+    }
+    }
+
+    static async updateUserPhone(req, res, next) {
+        const user = req.user;
+        const phone = req.body.phone;
+        try {
+            const data = await User.findByIdAndUpdate(user.aud, {
+                phone: phone
+            }, { new: true});
+            res.send(data);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }

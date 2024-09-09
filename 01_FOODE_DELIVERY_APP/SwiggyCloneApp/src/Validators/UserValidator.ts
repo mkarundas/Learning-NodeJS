@@ -130,4 +130,10 @@ export class UserValidators {
            ,
         ];
     }
+
+    static verifyUserPhone() {
+        return [
+            body('phone', 'Phone number is required.').isString()
+        ];
+    }
 }
