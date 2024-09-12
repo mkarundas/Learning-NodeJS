@@ -32,4 +32,15 @@ export class GlobalMiddlWare {
         }
 
     }
+
+    static async adminRole(req, res, next) {
+        const user = req.user;
+        console.log('The user is ',user.type)
+        if(user.type !== 'admin') {
+            req.user = 401;
+            next(new Error('You are an unauthorized user.'))
+        }
+        next();
+
+    }
 }

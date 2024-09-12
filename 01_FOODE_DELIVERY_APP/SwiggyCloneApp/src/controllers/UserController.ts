@@ -29,7 +29,8 @@ export class UserController {
             let user = await new User(data).save();
             const payload = {
                 aud: user._id,
-                email: user.email
+                email: user.email,
+                type: user.type
             }
 
             const token = Jwt.jwtSignIn(payload);
@@ -121,7 +122,8 @@ export class UserController {
             await Utils.comparePassword(data);
             const payload = {
                 aud: user._id,
-                email: user.email
+                email: user.email,
+                type: user.type
             }
 
             const token = Jwt.jwtSignIn(payload);  
