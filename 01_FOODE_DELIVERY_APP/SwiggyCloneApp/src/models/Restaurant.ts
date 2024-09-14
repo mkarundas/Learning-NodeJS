@@ -2,22 +2,24 @@ import * as mongoose from 'mongoose';
 import { model } from 'mongoose';
 
 const RestaurantSchema = new mongoose.Schema({
-    name: { type: String, required: true },
     user_id: { type: mongoose.Types.ObjectId, required: true },
     city_id: { type: mongoose.Types.ObjectId, required: true },
+    name: { type: String, required: true },
     short_name: { type: mongoose.Types.ObjectId, required: true },
-    cover: { type: String },
+    description: { type: String},
+    cover: { type: String, required: true },
     location: { type: Object, required: true },
     cuisines: { type: Array, required: true },
     open_time: { type: String, required: true },
     close_time: { type: String, required: true },
-    description: { type: String},
+    price: { type: Number, required: true },
     address: { type: String, required: true },
-    status: { type: String, required: true },
-    is_close: { type: Boolean, required: true, default: false },
     delivery_time: { type: Number, required: true },
+    is_close: { type: Boolean, required: true, default: false },
+    status: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
     total_rating: { type: Number, required: true, default: 0 },
+    //password: { type: String, required: true },
     created_at: { type: Date, required: true, default: new Date()},
     updated_at: { type: Date, required: true, default: new Date()}
 });
