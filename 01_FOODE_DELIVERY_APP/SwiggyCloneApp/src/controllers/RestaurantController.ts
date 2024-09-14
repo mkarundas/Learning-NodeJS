@@ -11,7 +11,7 @@ export class RestaurantController {
         const restaurant = req.body;
         const path = req.file.path;
         const verification_token = Utils.generateverificationToken();
-
+        console.log("path is => ",path)
         try {
             const hash = await Utils.encryptPassword(restaurant.password);
             const data = {
@@ -22,6 +22,7 @@ export class RestaurantController {
                 type: 'restaurant',
                 status: 'active',
                 phone: restaurant.phone,
+                name: restaurant.name
             }
 
             const user = await new User(data).save();
@@ -44,14 +45,17 @@ export class RestaurantController {
                 price: parseInt(restaurant.price),
                 delivery_time: parseInt(restaurant.delivery_time),
                 city_id: restaurant.city_id,
-                user: user._id,
+                user_id: user._id,
                 cover: path
             }
 
             if(restaurant.description) {
                 restaurant_data = {...restaurant_data, description: restaurant.description}
             }
+            const restaurant_doc = await new Restaurant(restaurant_data).save();
+            res.send(restaurant_doc);
         } catch (e) {
+            console.log("Error is => ",e)
             next(e);
         }
     }
