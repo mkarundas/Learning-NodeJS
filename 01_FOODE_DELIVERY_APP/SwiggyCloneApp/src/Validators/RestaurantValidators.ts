@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import User from "../models/User";
 
 
@@ -25,7 +25,7 @@ export class RestaurantValidator {
             body('password', 'Password is required.')
             .isAlphanumeric()
             .isLength({min: 5, max: 25}),
-            body('cover', 'Cover photo is required.').custom((banner, {req})=> {
+            body('restaurant_images', 'Cover photo is required.').custom((banner, {req})=> {
                if(req.file) {
                 return true;
                } else {
@@ -44,6 +44,14 @@ export class RestaurantValidator {
             body('cuisines', 'Cuisines are required.').isString(),
             body('city_id', 'City is required.').isString(),
 
+        ];
+    }
+
+    static nearby() {
+        return [
+            query('lat', 'Latitude is required.').isNumeric(),
+            query('lng', 'Longitude is required.').isNumeric(),
+            query('radius', 'Radius is required.').isNumeric()
         ];
     }
 }

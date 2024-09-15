@@ -20,7 +20,7 @@ export class BannerRouter {
     }
 
     postRoutes() {
-        this.router.post('/add', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, new Utils().multer.single('banner'), BannerValidator.addBanner(), GlobalMiddlWare.checkError, BannerController.addBanner);
+        this.router.post('/add', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, new Utils().multer.single('banner_images'), BannerValidator.addBanner(), GlobalMiddlWare.checkError, BannerController.addBanner);
 
     }
 

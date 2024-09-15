@@ -1,4 +1,5 @@
 import { Utils } from "../Utils/Utils";
+import Banner from "../models/Banner";
 import Category from "../models/Category";
 import City from "../models/City";
 import Restaurant from "../models/Restaurant";
@@ -11,7 +12,6 @@ export class RestaurantController {
         const restaurant = req.body;
         const path = req.file.path;
         const verification_token = Utils.generateverificationToken();
-        console.log("path is => ",path)
         try {
             const hash = await Utils.encryptPassword(restaurant.password);
             const data = {
@@ -60,10 +60,39 @@ export class RestaurantController {
         }
     }
 
-    static async getRestaurants(req, res, next) {
+    static async nearby(req, res, next) {
+        // const METERS_PER_KM = 1000;
+        // const EARTH_RADIUS_IN_MILE = 3963.2;
+        const EARTH_RADIUS_IN_KM = 6378.1;
+        const data = req.query;
         try {
-            const cities = await Restaurant.find({status: 'active'});
-            res.send(cities);
+            const restaurants = await Restaurant.find(
+                {
+                    status: 'active',
+                    location: {
+                        $geoWithin: { 
+                            $centerSphere: [ 
+                                [ parseFloat(data.lng), parseFloat(data.lat)], 
+                                parseFloat(data.radius) / EARTH_RADIUS_IN_KM 
+                            ] 
+                        }
+                    }
+
+                },
+                {
+                    // $nearSphere: {
+                    //    $geometry: {
+                    //       type : "Point",
+                    //       coordinates : [ parseFloat(data.lng), parseFloat(data.la) ]
+                    //    },
+                    //    $maxDistance: data.radius * METERS_PER_KM
+                    // }
+
+                    
+                  }
+            );
+            
+            res.send(restaurants);
         } catch (e) {
             next(e);
         }

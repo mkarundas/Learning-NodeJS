@@ -17,11 +17,11 @@ export class CityRouter {
     }
 
     getRoutes() {
-        this.router.get('/restaurants', GlobalMiddlWare.auth, RestaurantController.getRestaurants);
+        this.router.get('/nearby', GlobalMiddlWare.auth, RestaurantValidator.nearby(),GlobalMiddlWare.checkError,  RestaurantController.nearby);
     }
 
     postRoutes() {
-        this.router.post('/add', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, new Utils().multer.single('cover'), RestaurantValidator.addRestaurant(), GlobalMiddlWare.checkError, RestaurantController.addRestaurant);
+        this.router.post('/add', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, new Utils().multer.single('restaurant_images'), RestaurantValidator.addRestaurant(), GlobalMiddlWare.checkError, RestaurantController.addRestaurant);
 
     }
 

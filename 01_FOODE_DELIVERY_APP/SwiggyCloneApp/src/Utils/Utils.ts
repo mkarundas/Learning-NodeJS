@@ -3,7 +3,7 @@ import * as Multer from 'multer';
 
 const storageOptions = Multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './src/uploads');
+        cb(null, './src/uploads/' + file.fieldname);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
