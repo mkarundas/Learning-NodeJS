@@ -97,4 +97,43 @@ export class RestaurantController {
             next(e);
         }
     }
+
+    static async search(req, res, next) {
+        // const METERS_PER_KM = 1000;
+        // const EARTH_RADIUS_IN_MILE = 3963.2;
+        const EARTH_RADIUS_IN_KM = 6378.1;
+        const data = req.query;
+        try {
+            const restaurants = await Restaurant.find(
+                {
+                    status: 'active',
+                    name: {$regex: data.name, $options: 'i'},
+                    location: {
+                        $geoWithin: { 
+                            $centerSphere: [ 
+                                [ parseFloat(data.lng), parseFloat(data.lat)], 
+                                parseFloat(data.radius) / EARTH_RADIUS_IN_KM 
+                            ] 
+                        }
+                    }
+
+                },
+                {
+                    // $nearSphere: {
+                    //    $geometry: {
+                    //       type : "Point",
+                    //       coordinates : [ parseFloat(data.lng), parseFloat(data.la) ]
+                    //    },
+                    //    $maxDistance: data.radius * METERS_PER_KM
+                    // }
+
+                    
+                  }
+            );
+            
+            res.send(restaurants);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
