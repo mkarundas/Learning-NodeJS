@@ -3,7 +3,7 @@ import { model } from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
     name: { type: String, required: true },
-    user_id: { type: mongoose.Types.ObjectId, required: true },
+    restaurant_id: { type: mongoose.Types.ObjectId, required: true },
     created_at: { type: Date, required: true, default: new Date()},
     updated_at: { type: Date, required: true, default: new Date()}
 });

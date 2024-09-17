@@ -1,7 +1,5 @@
 import { Utils } from "../Utils/Utils";
-import Banner from "../models/Banner";
 import Category from "../models/Category";
-import City from "../models/City";
 import Restaurant from "../models/Restaurant";
 import User from "../models/User";
 
@@ -27,12 +25,6 @@ export class RestaurantController {
 
             const user = await new User(data).save();
 
-            const categories_data = JSON.parse(restaurant.categories).map(x => {
-                return ({name: x, user_id: user._id});
-            });
-
-            const categories = await Category.insertMany(categories_data);
-
             let restaurant_data: any = {
                 name: restaurant.res_name,
                 short_name: restaurant.short_name,
@@ -53,6 +45,14 @@ export class RestaurantController {
                 restaurant_data = {...restaurant_data, description: restaurant.description}
             }
             const restaurant_doc = await new Restaurant(restaurant_data).save();
+
+            const categories_data = JSON.parse(restaurant.categories).map(x => {
+                return ({name: x, restaurant_id: restaurant_doc._id});
+            });
+
+            const categories = await Category.insertMany(categories_data);
+
+
             res.send(restaurant_doc);
         } catch (e) {
             console.log("Error is => ",e)
@@ -130,6 +130,16 @@ export class RestaurantController {
                     
                   }
             );
+            
+            res.send(restaurants);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async all(req, res, next) {
+        try {
+            const restaurants = await Restaurant.find({ status: 'active',});
             
             res.send(restaurants);
         } catch (e) {

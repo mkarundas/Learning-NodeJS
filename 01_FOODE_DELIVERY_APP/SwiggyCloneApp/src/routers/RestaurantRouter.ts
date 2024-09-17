@@ -17,6 +17,7 @@ export class CityRouter {
     }
 
     getRoutes() {
+        this.router.get('/all', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, RestaurantController.all);
         this.router.get('/nearby', GlobalMiddlWare.auth, RestaurantValidator.nearby(),GlobalMiddlWare.checkError,  RestaurantController.nearby);
         this.router.get('/search', GlobalMiddlWare.auth, RestaurantValidator.search(),GlobalMiddlWare.checkError,  RestaurantController.search);
 
