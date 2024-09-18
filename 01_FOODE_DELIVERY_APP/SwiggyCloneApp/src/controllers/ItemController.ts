@@ -26,8 +26,12 @@ export class ItemController {
     }
 
     static async getItems(req, res, next) {
+        console.log("Hellooooo");
+        const restaurant = req.restaurant;
+        console.log("restaurant  ", restaurant);
         try {
-            
+            const items = await Item.find({restaurant_id: restaurant._id}, {__v: 0});
+            res.send(items);
         } catch (e) {
             next(e);
         }

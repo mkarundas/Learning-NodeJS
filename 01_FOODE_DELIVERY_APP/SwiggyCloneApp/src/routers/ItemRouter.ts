@@ -17,14 +17,11 @@ export class ItemRouter {
     }
 
     getRoutes() {
-        //this.router.get('/items', ItemController.getItems);
+        this.router.get('/items/:restaurant_id', GlobalMiddlWare.auth, ItemValidator.getItem(), GlobalMiddlWare.checkError, ItemController.getItems);
     }
 
     postRoutes() {
         this.router.post('/add', GlobalMiddlWare.auth, GlobalMiddlWare.adminRole, new Utils().multer.single('item_images'), ItemValidator.addItem(), GlobalMiddlWare.checkError, ItemController.addItem);
-       // this.router.post('/add', new Utils().multer.single('item_images'), ItemController.addItem);
-
-
     }
 
     patchRoutes() {

@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import Restaurant from "../models/Restaurant";
 import Category from "../models/Category";
 
@@ -46,6 +46,24 @@ export class ItemValidator {
             body('status', 'Status is required.').isBoolean(),
             body('price', 'Price is required.').isNumeric(),
             body('veg', 'Veg status is required.').isBoolean(),
+        ];
+    }
+
+    static getItem()  {
+        return [
+             param('restaurant_id', 'Restaurant id is required.').isString().custom((restaurant_id, {req})=> {
+                return Restaurant.findById(restaurant_id).then(restaurant=> {
+                    if(restaurant) {
+                        req.restaurant = restaurant;
+                        return true;
+                    } else {
+                        throw new Error('Unknown restaurant.');
+                    }
+                })
+                .catch(e => {
+                    throw new Error(e);
+                });
+            })
         ];
     }
 }
