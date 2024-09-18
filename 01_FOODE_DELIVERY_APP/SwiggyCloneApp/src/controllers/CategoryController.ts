@@ -6,7 +6,7 @@ export class CategoryController {
 
         try {
             const restaurant = req.params.restaurantId;
-            const categories = await Category.find({restaurant_id: restaurant});
+            const categories = await Category.find({restaurant_id: restaurant}, {__v: 0}).populate('restaurant_id').exec();
             res.send(categories);
         }catch (e) {
             next(e);

@@ -5,6 +5,7 @@ export class GlobalMiddlWare {
 
     static checkError(req, res, next) {
         const errors = validationResult(req);
+        console.log("The error is", errors);
         if(!errors.isEmpty()) {
             next(new Error(errors.array()[0].msg));
         } else {

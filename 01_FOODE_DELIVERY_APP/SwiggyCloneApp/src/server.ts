@@ -8,6 +8,7 @@ import BannerRouter from './routers/BannerRouter';
 import CityRouter from './routers/CityRouter';
 import RestaurantRouter from './routers/RestaurantRouter';
 import CategoryRouter from './routers/CategoryRouter';
+import ItemRouter from './routers/ItemRouter';
 
 export class Server {
 
@@ -45,6 +46,7 @@ export class Server {
         this.app.use('/api/city', CityRouter);
         this.app.use('/api/restaurant', RestaurantRouter);
         this.app.use('/api/category', CategoryRouter);
+        this.app.use('/api/item', ItemRouter);
     }
 
     error404Handler() {
