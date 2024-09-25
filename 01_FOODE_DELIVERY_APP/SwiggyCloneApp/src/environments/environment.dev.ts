@@ -1,7 +1,9 @@
+import { Utils } from "../Utils/Utils";
 import { Environment } from "./environment";
 
+Utils.dotenvConfigs();
 export const DevEnvironment: Environment = {
-    db_uri: 'mongodb://localhost:27017/SwiggyCloneApp',
+    db_uri: process.env.DEV_DB_URI,
     sendgrid_api_key: '',
     gmail_auth: {
         user: '',

@@ -10,6 +10,7 @@ import RestaurantRouter from './routers/RestaurantRouter';
 import CategoryRouter from './routers/CategoryRouter';
 import ItemRouter from './routers/ItemRouter';
 import AddressRouter from './routers/AddressRouter';
+import { Utils } from './Utils/Utils';
 
 export class Server {
 
@@ -23,9 +24,14 @@ export class Server {
     }
 
     setConfigs() {
+        this.dotenvConfigs();
         this.connnectMongoDB();
         this.allowCors();
         this.configureBodyParser();
+    }
+
+    dotenvConfigs() {
+        Utils.dotenvConfigs()
     }
 
     connnectMongoDB() {

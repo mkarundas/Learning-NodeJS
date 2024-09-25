@@ -17,7 +17,17 @@ export class AddressController {
                 lng: body.lng,
             }
             const address = await new Address(addressData).save();
-            res.send(address);
+            const response_address = {
+                title: address.title,
+                address: address.address,
+                landmark: address.landmark,
+                house: address.house,
+                lat: address.lat,
+                lng: address.lng,
+                created_at: address.created_at,
+                updated_at: address.updated_at,
+            }
+            res.send(response_address);
         } catch (e) {
             next(e);
         }
@@ -57,6 +67,8 @@ export class AddressController {
             const address = await Address.findOne({
                 user_id,
                 _id: id
+            }, {
+                projection: {user_id: 0, __v:0}
             });
             res.send(address);
         } catch (e) {
@@ -81,7 +93,8 @@ export class AddressController {
                 lng: body.lng,
                 updated_at: new Date()
             }, {
-                new: true
+                new: true,
+                projection: {user_id: 0, __v:0}
             });
             if(address) {
                 res.send(address);
