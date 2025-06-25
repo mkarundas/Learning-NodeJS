@@ -1,0 +1,21 @@
+{
+  "id": 101,
+  "name": "Arun Das",
+  "email": "arun.das@example.com",
+  "isActive": true,
+  "roles": ["admin", "editor"],
+  "profile": {
+    "age": 30,
+    "gender": "male",
+    "location": "Kochi, India"
+  },
+  "createdAt": "2025-06-25T17:00:00+05:30",
+  "preferences": {
+    "language": "en",
+    "notifications": {
+      "email": true,
+      "sms": false,
+      "push": true
+    }
+  }
+}
